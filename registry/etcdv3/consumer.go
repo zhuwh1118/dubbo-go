@@ -49,9 +49,9 @@ func (r *EtcdRegistry) GetService(conf registry.ServiceConfig) ([]registry.Servi
 	}
 
 	var listenerServiceMap = make(map[string]registry.ServiceURL)
-	for _, n := range nodes {
+	for _, n := range nodes.Kvs {
 
-		serviceURL, err = plugins.DefaultServiceURL()(n)
+		serviceURL, err = plugins.DefaultServiceURL()(string(n.Key))
 		if err != nil {
 			log.Error("NewDefaultServiceURL({%s}) = error{%v}", n, err)
 			continue

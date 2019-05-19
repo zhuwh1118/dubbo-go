@@ -60,10 +60,6 @@ func (l *etcdEventListener) listenDirEvent(zkPath string, conf registry.ServiceC
 	defer close(event)
 }
 
-// this func is invoked by ZkConsumerRegistry::Registe/ZkConsumerRegistry::get/ZkConsumerRegistry::getListener
-// registry.go:Listen -> listenServiceEvent -> listenDirEvent -> listenServiceNodeEvent
-//                            |
-//                            --------> listenServiceNodeEvent
 func (l *etcdEventListener) listenServiceEvent(conf registry.ServiceConfig) {
 	var (
 		err        error
@@ -84,7 +80,6 @@ func (l *etcdEventListener) listenServiceEvent(conf registry.ServiceConfig) {
 	l.serviceMap[etcdPath] = struct{}{}
 	l.serviceMapLock.Unlock()
 
-	//log.Info("listen dubbo provider path{%s} event and wait to get all provider zk nodes", zkPath)
 	children, err := l.client.kv.Get(context.Background(), etcdPath)
 	if err != nil {
 		children = nil
