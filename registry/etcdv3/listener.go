@@ -7,7 +7,7 @@ import (
 )
 
 import (
-	"github.com/dubbo/dubbo-go/registry"
+	"github.com/dubbo/go-for-apache-dubbo/registry"
 )
 
 type etcdEventListener struct {
