@@ -78,5 +78,5 @@ func (e *etcdClient) Create(basePath string) error {
 }
 
 func (e *etcdClient) Delete(basePath string) error {
-
+	return nil
 }
