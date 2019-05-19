@@ -1,14 +1,17 @@
 package etcdv3
 
 import (
-	log "github.com/AlexStocks/log4go"
-	etcd "github.com/etcd-io/etcd/clientv3"
-	jerrors "github.com/juju/errors"
 	"golang.org/x/net/context"
 	"path"
 	"strings"
 	"sync"
 	"time"
+)
+
+import (
+	log "github.com/AlexStocks/log4go"
+	etcd "github.com/etcd-io/etcd/clientv3"
+	jerrors "github.com/juju/errors"
 )
 
 type etcdClient struct {
@@ -65,7 +68,7 @@ func (e *etcdClient) Create(basePath string) error {
 		e.Unlock()
 		if err != nil {
 			log.Error("etcd.create(\"%s\") error(%v)\n", tmpPath, jerrors.ErrorStack(err))
-			return jerrors.Annotatef(err, "zk.Create(path:%s)", basePath)
+			return jerrors.Annotatef(err, "etcd.Create(path:%s)", basePath)
 		}
 	}
 

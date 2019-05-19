@@ -2,9 +2,12 @@ package etcdv3
 
 import (
 	"fmt"
-	"github.com/dubbo/dubbo-go/registry"
 	"golang.org/x/net/context"
 	"sync"
+)
+
+import (
+	"github.com/dubbo/dubbo-go/registry"
 )
 
 type etcdEventListener struct {
