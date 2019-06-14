@@ -22,16 +22,20 @@ import (
 	"reflect"
 	"sync"
 	"time"
+)
 
+import (
 	"github.com/dubbogo/getty"
+	"github.com/dubbogo/hessian2"
+	perrors "github.com/pkg/errors"
+)
 
+import (
 	"github.com/apache/dubbo-go/common"
 	"github.com/apache/dubbo-go/common/constant"
 	"github.com/apache/dubbo-go/common/logger"
 	"github.com/apache/dubbo-go/protocol"
 	"github.com/apache/dubbo-go/protocol/invocation"
-	hessian "github.com/dubbogo/hessian2"
-	perrors "github.com/pkg/errors"
 )
 
 // todo: WritePkg_Timeout will entry *.yml
@@ -82,6 +86,9 @@ func (h *RpcClientHandler) OnMessage(session getty.Session, pkg interface{}) {
 
 	if p.Header.Type&hessian.PackageHeartbeat != 0x00 {
 		logger.Debugf("get rpc heartbeat response{header: %#v, body: %#v}", p.Header, p.Body)
+		if p.Err != nil {
+			logger.Errorf("rpc heartbeat response{error: %#v}", p.Err)
+		}
 		return
 	}
 	logger.Debugf("get rpc response{header: %#v, body: %#v}", p.Header, p.Body)
@@ -199,7 +206,6 @@ func (h *RpcServerHandler) OnMessage(session getty.Session, pkg interface{}) {
 	// not twoway
 	if p.Header.Type&hessian.PackageRequest_TwoWay == 0x00 {
 		twoway = false
-		h.reply(session, p, hessian.PackageResponse)
 	}
 
 	invoker := h.exporter.GetInvoker()
@@ -323,7 +329,7 @@ func (h *RpcServerHandler) callService(req *DubboPackage, ctx context.Context) {
 	}
 	if retErr != nil {
 		req.Header.ResponseStatus = hessian.Response_OK
-		req.Body = perrors.WithStack(retErr.(error))
+		req.Body = retErr
 	} else {
 		req.Body = replyv.Interface()
 	}
